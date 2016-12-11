@@ -14,6 +14,7 @@
           <tr>
               <th>Location</th>
               <th>City</th>
+              <th>Pincode</th>
               <th>Bank</th>
               <th>Updated</th>
           </tr>
@@ -22,8 +23,9 @@
   {{range .payload }}
   <tr class='clickable-row' data-href='/atm/view/{{.Id}}'>
       <td>{{.Location}}</td>
-      <td>{{.Bank}}</td>
       <td>{{.City}}</td>
+      <td>{{.Pincode}}</td>
+      <td>{{.Bank}}</td>
       <td><time class='atm--updated-at' data-value='{{.UpdatedAt}}'>{{.UpdatedAt}}</time></td>
   </tr>
   {{end}}
