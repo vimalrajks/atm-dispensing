@@ -28,6 +28,7 @@ type Atm struct {
 	Location  string    `json:"location"`
 	Bank      string    `json:"bank"`
 	City      string    `json:"city"`
+	Pincode   string    `json:"pincode"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -45,6 +46,7 @@ func AllAtmsDb(ctx *gin.Context) ([]*Atm, error) {
 		err = rows.Scan(&atm.Id,
 			&atm.Location,
 			&atm.City,
+			&atm.Pincode,
 			&atm.Bank,
 			&atm.CreatedAt,
 			&atm.UpdatedAt)
@@ -65,9 +67,10 @@ func AddAtmDb(ctx *gin.Context) (*Atm, error) {
 	atm.Location = ctx.PostForm("location")
 	atm.Bank = ctx.PostForm("bank")
 	atm.City = ctx.PostForm("city")
+	atm.Pincode = ctx.PostForm("pincode")
 	fmt.Println(atm)
 	_, err := db.Exec(`
-	INSERT INTO atms(location,bank,city) VALUES(?,?,?)`, &atm.Location, &atm.Bank, &atm.City)
+	INSERT INTO atms(location,bank,city,pincode) VALUES(?,?,?)`, &atm.Location, &atm.Bank, &atm.City, &atm.Pincode)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -80,8 +83,8 @@ func GetAtmById(ctx *gin.Context) (*Atm, error) {
 	if ID, err := strconv.Atoi(ctx.Param("id")); err == nil {
 		fmt.Println(ID)
 		db := ctx.MustGet("db").(*sql.DB)
-		row := db.QueryRow("SELECT id, location, city, bank, updated_at, created_at FROM atms WHERE id=?", ID)
-		err := row.Scan(&atm.Id, &atm.Location, &atm.Bank, &atm.City, &atm.UpdatedAt, &atm.CreatedAt)
+		row := db.QueryRow("SELECT id, location, city, pincode, bank,  updated_at, created_at FROM atms WHERE id=?", ID)
+		err := row.Scan(&atm.Id, &atm.Location, &atm.Bank, &atm.City, &atm.Pincode, &atm.UpdatedAt, &atm.CreatedAt)
 		if err != nil {
 			ctx.AbortWithError(http.StatusNotFound, err)
 		}
